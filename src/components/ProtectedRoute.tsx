@@ -15,6 +15,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <>{children}</>; // Render the children (Admin Dashboard)
   }
 
+  // If the user is authenticated but not an admin, restrict access
+  if (!isAdmin && window.location.pathname === '/admin-dashboard') {
+    return <Navigate to="/dashboard" />; // Redirect to user dashboard
+  }
+
   // If the user is authenticated but not an admin, allow access to user dashboard
   return <>{children}</>; // Render the children (User Dashboard)
 };
