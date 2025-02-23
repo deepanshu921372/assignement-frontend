@@ -25,8 +25,8 @@ const Login = () => {
       setLoading(true);
       const user = await login(email, password);
       showToast("Logged in successfully!", "success");
-      window.location.href = "/admin-dashboard";
       if (user.role === "admin") {
+        window.location.href = "/admin-dashboard";
       } else {
         navigate("/dashboard");
       }
