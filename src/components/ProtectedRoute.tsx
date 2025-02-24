@@ -1,27 +1,29 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  const location = useLocation();
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
-  // If the user is not authenticated, redirect to login
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRedirectPath('/login');
+    } else if (isAdmin && location.pathname !== '/admin-dashboard') {
+      setRedirectPath('/admin-dashboard');
+    } else if (!isAdmin && location.pathname !== '/dashboard') {
+      setRedirectPath('/dashboard');
+    } else {
+      setRedirectPath(null);
+    }
+  }, [isAuthenticated, isAdmin, location.pathname]);
+
+  if (redirectPath) {
+    return <Navigate to={redirectPath} replace />;
   }
 
-  // If the user is an admin, allow access to the admin dashboard
-  if (isAdmin) {
-    return <>{children}</>; // Render the children (Admin Dashboard)
-  }
-
-  // If the user is authenticated but not an admin, restrict access
-  if (!isAdmin && window.location.pathname === '/admin-dashboard') {
-    return <Navigate to="/dashboard" />; // Redirect to user dashboard
-  }
-
-  // If the user is authenticated but not an admin, allow access to user dashboard
-  return <>{children}</>; // Render the children (User Dashboard)
+  return <>{children}</>;
 };
 
-export default ProtectedRoute; 
+export default ProtectedRoute;

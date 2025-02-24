@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography, TextField, Button, Alert } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+
 const Login = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -26,12 +27,12 @@ const Login = () => {
       const user = await login(email, password);
       showToast("Logged in successfully!", "success");
       if (user.role === "admin") {
-        window.location.href = "/admin-dashboard";
+        navigate("/admin-dashboard");
       } else {
         navigate("/dashboard");
       }
     } catch (err) {
-      // setError('Failed to log in. Please check your credentials.');
+      setError('Failed to log in. Please check your credentials.');
       showToast('Failed to log in. Please check your credentials.', 'error');
     } finally {
       setLoading(false);
