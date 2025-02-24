@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     } else if (isAdmin && location.pathname !== '/admin-dashboard') {
       setRedirectPath('/admin-dashboard');
     } else if (!isAdmin && location.pathname !== '/dashboard') {
-      setRedirectPath('/dashboard');
+      setRedirectPath(null);
     } else {
       setRedirectPath(null);
     }
